@@ -894,8 +894,10 @@ class FormHelper extends AppHelper {
 				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $selected, $options);
 			break;
 			case 'textarea':
+				$input = $this->textarea($fieldName, $options + array('cols' => 30, 'rows' => 6));
+			break;
 			default:
-				$input = $this->textarea($fieldName, $options + array('cols' => '30', 'rows' => '6'));
+				$input = $this->defaultInput($type, $fieldName, $options);
 			break;
 		}
 
@@ -1136,6 +1138,25 @@ class FormHelper extends AppHelper {
 	function text($fieldName, $options = array()) {
 		$options = $this->_initInputField($fieldName, array_merge(
 			array('type' => 'text'), $options
+		));
+		return sprintf(
+			$this->Html->tags['input'],
+			$options['name'],
+			$this->_parseAttributes($options, array('name'), null, ' ')
+		);
+	}
+	
+/**
+ * Creates a default input widget, whose type is determined by $options['type'].
+ *
+ * @param string $fieldName Name of a field, in the form "Modelname.fieldname"
+ * @param array $options Array of HTML attributes.
+ * @return string A generated HTML input element
+ * @access public
+ */
+	function defaultInput($type, $fieldName, $options = array()) {
+		$options = $this->_initInputField($fieldName, array_merge(
+			array('type' => $type), $options
 		));
 		return sprintf(
 			$this->Html->tags['input'],
